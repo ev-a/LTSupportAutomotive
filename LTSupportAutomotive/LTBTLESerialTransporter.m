@@ -112,6 +112,12 @@ NSString* const LTBTLESerialTransporterDidDiscoverDevice = @"LTBTLESerialTranspo
     [_possibleAdapters enumerateObjectsUsingBlock:^(CBPeripheral * _Nonnull peripheral, NSUInteger idx, BOOL * _Nonnull stop) {
         [self->_manager cancelPeripheralConnection:peripheral];
     }];
+
+    _adapter = nil;
+    _inputStream = nil;
+    _outputStream = nil;
+    _reader = nil;
+    _writer = nil;
 }
 
 -(void)startDiscoveryWithBlock:(LTBTLEDeviceDiscoveredBlock)block
@@ -124,6 +130,7 @@ NSString* const LTBTLESerialTransporterDidDiscoverDevice = @"LTBTLESerialTranspo
 
 -(void)stopDiscovery
 {
+    _discoveryBlock = nil;
     if (_manager.isScanning) {
         [_manager stopScan];
     }
