@@ -45,16 +45,7 @@
         return nil;
     }
 
-    identification = @""; // indicates that we got a valid response terminator, even if there was not valid identification string (e.g. '?')
-    NSString* stringWithoutResponseTerminator = [response substringToIndex:response.length - 1];
-    [stringWithoutResponseTerminator enumerateLinesUsingBlock:^(NSString * _Nonnull line, BOOL * _Nonnull stop) {
-        if ( line.length > 1 )
-        {
-            identification = line;
-        }
-    }];
-    identification = [identification stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-    return identification;
+    return response;
 }
 
 #pragma mark -
@@ -198,27 +189,8 @@
         return;
     }
 
-    NSMutableCharacterSet* whitespaceNewlineAndPrompt = [NSMutableCharacterSet whitespaceAndNewlineCharacterSet];
-    [whitespaceNewlineAndPrompt addCharactersInString:@">"];
-    NSString* receivedStringWithoutTermination = [receivedString stringByTrimmingCharactersInSet:whitespaceNewlineAndPrompt];
-
     NSMutableArray<NSString*>* ma = [NSMutableArray array];
-    __block NSInteger idx = -1;
-    [receivedStringWithoutTermination enumerateLinesUsingBlock:^(NSString * _Nonnull line, BOOL * _Nonnull stop) {
-
-        idx++;
-        if ( line.length < 1 )
-        {
-            return;
-        }
-        if ( idx < ma.count && ! [self isValidPidLine:line] )
-        {
-            return;
-        }
-        [ma addObject:line];
-
-    }];
-
+    [ma addObject:receivedString];
     [self responseCompleted:ma];
 }
 
